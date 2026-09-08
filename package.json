@@ -1,0 +1,11 @@
+{
+  "private": "true",
+  "type": "module",
+  "engines": {
+    "node": ">=24.20.0"
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "tailwindcss": "^4.3.3"
+  }
+}
