@@ -6,36 +6,58 @@
   <link rel="stylesheet" href="./styles.css">
   <title>Secure Password Generator - By johnjanieltr</title>
 </head>
-<body>
-  <h1>Secure Password Generator</h1>
-  <section>
-    <div>
-      <p id="resulting-password">password example</p>
-      <div id="icons">
+<body class="min-h-screen bg-[#12151C] text-[#E8E6DE] font-sans flex flex-col items-center justify-center px-4 py-12 gap-8">
+
+  <div class="text-center">
+    <h1 class="text-2xl font-semibold tracking-tight">Secure Password Generator</h1>
+    <p class="text-sm text-[#8A8F9C] mt-1">Generated locally in your browser. Nothing leaves your device.</p>
+  </div>
+
+  <section class="w-full max-w-md bg-[#1B1F29] border border-[#2A2F3A] rounded-2xl p-6 shadow-2xl shadow-black/40">
+
+    <div class="flex items-center justify-between gap-3 bg-[#12151C] border border-[#2A2F3A] rounded-xl px-4 py-4 mb-6">
+      <p id="resulting-password" class="font-mono text-lg text-[#F2B84B] tracking-wide break-all">password example</p>
+      <div id="icons" class="flex items-center gap-2 shrink-0">
       </div>
     </div>
-    <div>
-      <span>
-        Length
-        <input type="number" name="length" id="check-length" value="10">
-      </span>
-      <span>
-        Uppercase
-        <input type="checkbox" name="uppercase" id="check-uppercase">
-      </span>
-      <span>
-        Lowercase
-        <input type="checkbox" name="lowercase" id="check-lowercase">
-      </span>
-      <span>
 
-      </span>
-      <input type="checkbox" name="numbers" id="check-numbers">
-      <input type="checkbox" name="symbols" id="check-symbols">
+    <div class="mb-6">
+      <div class="flex items-center justify-between mb-2">
+        <label for="check-length" class="text-sm text-[#8A8F9C]">Length</label>
+        <span id="length-value" class="text-sm font-mono text-[#F2B84B]">12</span>
+      </div>
+      <input
+        type="range"
+        name="length"
+        id="check-length"
+        min="8"
+        max="50"
+        value="12"
+        class="w-full h-1.5 rounded-full bg-[#2A2F3A] accent-[#F2B84B] cursor-pointer"
+      >
     </div>
+
+    <div class="grid grid-cols-2 gap-2">
+      <label for="check-uppercase" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-[#12151C] transition-colors">
+        <input type="checkbox" name="uppercase" id="check-uppercase" checked class="accent-[#F2B84B]">
+        Uppercase
+      </label>
+      <label for="check-lowercase" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-[#12151C] transition-colors">
+        <input type="checkbox" name="lowercase" id="check-lowercase" checked class="accent-[#F2B84B]">
+        Lowercase
+      </label>
+      <label for="check-numbers" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-[#12151C] transition-colors">
+        <input type="checkbox" name="numbers" id="check-numbers" checked class="accent-[#F2B84B]">
+        Numbers
+      </label>
+      <label for="check-symbols" class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm cursor-pointer hover:bg-[#12151C] transition-colors">
+        <input type="checkbox" name="symbols" id="check-symbols" checked class="accent-[#F2B84B]">
+        Symbols
+      </label>
+    </div>
+
   </section>
-  <!-- longitud, incluir: Mayusculas (A-Z) Minusculas (a-z), Numbers (0-9) Symbols (!@#$%^&*) -->
-  <!-- incluir boton de generar nueva contraseña y otro de copiar al portapapeles-->
-   <script type="module" src="./index.js"></script>
+
+  <script type="module" src="./index.js"></script>
 </body>
 </html>

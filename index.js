@@ -1,8 +1,14 @@
 const $resultingPassword = document.getElementById("resulting-password");
+const $lengthInput = document.getElementById("check-length");
+const $lengthValue = document.getElementById("length-value");
 
 document.addEventListener("DOMContentLoaded", () => {
-  // $resultingPassword.textContent = generatePassword();
-  console.log(generatePassword());
+  $resultingPassword.textContent = generatePassword();
+});
+
+// actualiza el número visible en tiempo real mientras se arrastra el slider
+$lengthInput.addEventListener("input", () => {
+  $lengthValue.textContent = $lengthInput.value;
 });
 
 // detecta cualquier cambio en los inputs
@@ -26,16 +32,14 @@ function renderPassword() {
 
   try {
     const password = generatePassword(length, uppercase, lowercase, numbers, symbols);
-    // $resultingPassword.textContent = password;
-    console.log(password);
+    $resultingPassword.textContent = password;
   } catch (error) {
-    // $resultingPassword.textContent = error.message;
-    console.log(error.message);
+    $resultingPassword.textContent = error.message;
   }
 }
 
 function generatePassword(
-  length = 16,
+  length = 12,
   uppercase = true,
   lowercase = true,
   numbers = true,
