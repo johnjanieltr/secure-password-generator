@@ -2,8 +2,54 @@ const $resultingPassword = document.getElementById("resulting-password");
 const $lengthInput = document.getElementById("check-length");
 const $lengthValue = document.getElementById("length-value");
 
+// pool de caracteres usado únicamente para el efecto visual de scramble
+const SCRAMBLE_CHARACTERS =
+  "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*.?=-";
+
+// contador para poder cancelar una animación vieja si arranca una nueva antes de que termine
+let scrambleRunId = 0;
+
+// anima el texto de un elemento revelando cada caracter en cascada, tipo "decrypt"
+function scrambleReveal(element, finalText, duration = 500) {
+  const runId = ++scrambleRunId;
+  const length = finalText.length;
+  const startTime = performance.now();
+  const settleInterval = duration / length;
+
+  function frame(now) {
+    // si ya arrancó una animación más nueva, esta se detiene sola
+    if (runId !== scrambleRunId) return;
+
+    const elapsed = now - startTime;
+    let display = "";
+
+    for (let i = 0; i < length; i++) {
+      const settleTime = (i + 1) * settleInterval;
+
+      if (elapsed >= settleTime) {
+        display += finalText[i];
+      } else {
+        display +=
+          SCRAMBLE_CHARACTERS[
+            Math.floor(Math.random() * SCRAMBLE_CHARACTERS.length)
+          ];
+      }
+    }
+
+    element.textContent = display;
+
+    if (elapsed < duration) {
+      requestAnimationFrame(frame);
+    } else {
+      element.textContent = finalText;
+    }
+  }
+
+  requestAnimationFrame(frame);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  $resultingPassword.textContent = generatePassword();
+  scrambleReveal($resultingPassword, generatePassword());
 });
 
 // actualiza el número visible en tiempo real mientras se arrastra el slider
@@ -32,7 +78,7 @@ function renderPassword() {
 
   try {
     const password = generatePassword(length, uppercase, lowercase, numbers, symbols);
-    $resultingPassword.textContent = password;
+    scrambleReveal($resultingPassword, password);
   } catch (error) {
     $resultingPassword.textContent = error.message;
   }
@@ -50,7 +96,7 @@ function generatePassword(
   let upperCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let lowerCharacters = "abcdefghijklmnopqrstuvwxyz";
   let numericCharacters = "0123456789";
-  const symbolCharacters = "!@#$%^&*.?";
+  const symbolCharacters = "!@#$%&*.?=-";
 
   // Si excludeAmbiguous está activo, quitamos los caracteres que se confunden visualmente
   if (excludeAmbiguous) {
