@@ -1,9 +1,91 @@
 const $resultingPassword = document.getElementById("resulting-password");
 const $lengthInput = document.getElementById("check-length");
 const $lengthValue = document.getElementById("length-value");
+const $uppercaseInput = document.getElementById("check-uppercase");
+const $lowercaseInput = document.getElementById("check-lowercase");
+const $numbersInput = document.getElementById("check-numbers");
+const $symbolsInput = document.getElementById("check-symbols");
 const $copyBtn = document.getElementById("copy-btn");
 const $copyTooltip = document.getElementById("copy-tooltip");
 const $refreshBtn = document.getElementById("refresh-btn");
+const $themeToggle = document.getElementById("theme-toggle");
+const $sunIcon = document.getElementById("sun-icon");
+const $moonIcon = document.getElementById("moon-icon");
+
+// --- Tema (oscuro/claro) ---
+// Nota: la clase de color YA fue aplicada por el script inline en el <head>
+// (para evitar parpadeo). Aquí solo sincronizamos los íconos y manejamos
+// el toggle manual del usuario.
+
+// aplica el tema al <html>, sincroniza los íconos y opcionalmente lo persiste
+function setTheme(theme, persist) {
+  if (theme === "light") {
+    document.documentElement.setAttribute("data-theme", "light");
+    $sunIcon.classList.remove("hidden");
+    $moonIcon.classList.add("hidden");
+  } else {
+    document.documentElement.removeAttribute("data-theme");
+    $moonIcon.classList.remove("hidden");
+    $sunIcon.classList.add("hidden");
+  }
+
+  if (persist) {
+    localStorage.setItem("theme", theme);
+  }
+}
+
+// sincroniza los íconos con el tema que el script del <head> ya aplicó
+const currentTheme =
+  document.documentElement.getAttribute("data-theme") === "light"
+    ? "light"
+    : "dark";
+setTheme(currentTheme, false);
+
+// clic manual del usuario: alterna el tema y esta vez SÍ lo guarda como
+// preferencia explícita, para que prevalezca en visitas futuras
+$themeToggle.addEventListener("click", () => {
+  const isLight = document.documentElement.getAttribute("data-theme") === "light";
+  setTheme(isLight ? "dark" : "light", true);
+});
+
+// --- Preferencias de los inputs (longitud, mayúsculas, minúsculas, números, símbolos) ---
+
+const PREFERENCES_KEY = "passwordPreferences";
+
+// lee los valores actuales de los inputs y los guarda en localStorage
+function savePreferences() {
+  const preferences = {
+    length: $lengthInput.value,
+    uppercase: $uppercaseInput.checked,
+    lowercase: $lowercaseInput.checked,
+    numbers: $numbersInput.checked,
+    symbols: $symbolsInput.checked,
+  };
+
+  localStorage.setItem(PREFERENCES_KEY, JSON.stringify(preferences));
+}
+
+// si hay preferencias guardadas, las aplica a los inputs; si no hay nada,
+// deja los valores por defecto que ya trae el HTML
+function loadPreferences() {
+  const stored = localStorage.getItem(PREFERENCES_KEY);
+  if (!stored) return;
+
+  try {
+    const preferences = JSON.parse(stored);
+
+    $lengthInput.value = preferences.length;
+    $lengthValue.textContent = preferences.length;
+    $uppercaseInput.checked = preferences.uppercase;
+    $lowercaseInput.checked = preferences.lowercase;
+    $numbersInput.checked = preferences.numbers;
+    $symbolsInput.checked = preferences.symbols;
+  } catch (error) {
+    console.log("No se pudieron cargar las preferencias guardadas:", error);
+  }
+}
+
+// --- Generación de contraseñas ---
 
 // pool de caracteres usado únicamente para el efecto visual de scramble
 const SCRAMBLE_CHARACTERS =
@@ -76,7 +158,8 @@ function waveAnimate(element, text, duration = 500) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  scrambleReveal($resultingPassword, generatePassword());
+  loadPreferences();
+  renderPassword();
 });
 
 // actualiza el número visible en tiempo real mientras se arrastra el slider
@@ -91,6 +174,7 @@ document.addEventListener("change", (e) => {
       "#check-length, #check-uppercase, #check-lowercase, #check-numbers, #check-symbols"
     )
   ) {
+    savePreferences();
     renderPassword();
   }
 });
@@ -126,11 +210,11 @@ $refreshBtn.addEventListener("click", renderPassword);
 
 // obtiene los valores actuales de los inputs y actualiza el <p> en el HTML
 function renderPassword() {
-  const length = parseInt(document.getElementById("check-length").value, 10);
-  const uppercase = document.getElementById("check-uppercase").checked;
-  const lowercase = document.getElementById("check-lowercase").checked;
-  const numbers = document.getElementById("check-numbers").checked;
-  const symbols = document.getElementById("check-symbols").checked;
+  const length = parseInt($lengthInput.value, 10);
+  const uppercase = $uppercaseInput.checked;
+  const lowercase = $lowercaseInput.checked;
+  const numbers = $numbersInput.checked;
+  const symbols = $symbolsInput.checked;
 
   try {
     const password = generatePassword(length, uppercase, lowercase, numbers, symbols);

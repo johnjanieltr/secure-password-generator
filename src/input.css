@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  --color-app-bg: #12151C;
+  --color-app-panel: #1B1F29;
+  --color-app-border: #2A2F3A;
+  --color-app-text: #E8E6DE;
+  --color-app-muted: #8A8F9C;
+  --color-app-accent: #F2B84B;
+}
+
+[data-theme="light"] {
+  --color-app-bg: #F5F3EE;
+  --color-app-panel: #FFFFFF;
+  --color-app-border: #E2DFD6;
+  --color-app-text: #1B1F29;
+  --color-app-muted: #6B6F7B;
+  --color-app-accent: #B8791D;
+}
+
 @keyframes wave-bounce {
   0%, 100% {
     transform: translateY(0);
@@ -14,4 +32,12 @@
   animation-name: wave-bounce;
   animation-timing-function: ease-in-out;
   animation-fill-mode: both;
+}
+
+.shadow-app {
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / var(--shadow-opacity, 0.4));
+}
+
+[data-theme="light"] .shadow-app {
+  --shadow-opacity: 0.08;
 }
