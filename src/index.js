@@ -1,6 +1,9 @@
 const $resultingPassword = document.getElementById("resulting-password");
 const $lengthInput = document.getElementById("check-length");
 const $lengthValue = document.getElementById("length-value");
+const $copyBtn = document.getElementById("copy-btn");
+const $copyTooltip = document.getElementById("copy-tooltip");
+const $refreshBtn = document.getElementById("refresh-btn");
 
 // pool de caracteres usado únicamente para el efecto visual de scramble
 const SCRAMBLE_CHARACTERS =
@@ -48,6 +51,30 @@ function scrambleReveal(element, finalText, duration = 500) {
   requestAnimationFrame(frame);
 }
 
+// anima cada caracter con un rebote (sube y baja) en cascada, tipo "ola"
+function waveAnimate(element, text, duration = 500) {
+  const chars = text.split("");
+  const length = chars.length;
+
+  // duración del rebote de cada caracter individual
+  const charDuration = Math.min(350, duration);
+  // qué tan separado arranca cada caracter respecto al anterior, para que el último termine justo en "duration"
+  const delayStep = length > 1 ? (duration - charDuration) / (length - 1) : 0;
+
+  element.innerHTML = chars
+    .map((char, i) => {
+      const delay = i * delayStep;
+      const safeChar = char === " " ? "&nbsp;" : char;
+      return `<span class="wave-char" style="animation-delay:${delay}ms; animation-duration:${charDuration}ms;">${safeChar}</span>`;
+    })
+    .join("");
+
+  // al terminar, volvemos a texto plano para no dejar el DOM con spans innecesarios
+  setTimeout(() => {
+    element.textContent = text;
+  }, duration + charDuration - delayStep + 50);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   scrambleReveal($resultingPassword, generatePassword());
 });
@@ -67,6 +94,35 @@ document.addEventListener("change", (e) => {
     renderPassword();
   }
 });
+
+// contador para poder cancelar un tooltip viejo si el usuario hace click varias veces seguidas
+let tooltipTimeoutId = null;
+
+// copia la contraseña actual al portapapeles y muestra tooltip + animación de confirmación
+$copyBtn.addEventListener("click", async () => {
+  const password = $resultingPassword.textContent;
+
+  try {
+    await navigator.clipboard.writeText(password);
+
+    waveAnimate($resultingPassword, password);
+
+    $copyTooltip.classList.remove("opacity-0");
+    $copyTooltip.classList.add("opacity-100");
+
+    // si el usuario hace click varias veces seguidas, reinicia el temporizador en vez de acumularlos
+    clearTimeout(tooltipTimeoutId);
+    tooltipTimeoutId = setTimeout(() => {
+      $copyTooltip.classList.remove("opacity-100");
+      $copyTooltip.classList.add("opacity-0");
+    }, 1500);
+  } catch (error) {
+    console.log("No se pudo copiar la contraseña:", error);
+  }
+});
+
+// genera una nueva contraseña manteniendo la configuración actual de los inputs
+$refreshBtn.addEventListener("click", renderPassword);
 
 // obtiene los valores actuales de los inputs y actualiza el <p> en el HTML
 function renderPassword() {

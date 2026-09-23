@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+@keyframes wave-bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.wave-char {
+  display: inline-block;
+  animation-name: wave-bounce;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
