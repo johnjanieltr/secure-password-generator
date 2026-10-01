@@ -2,12 +2,28 @@
 const SCRAMBLE_CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*.?=-";
 
+// preferencia del sistema de reducir movimiento; .matches se actualiza solo si el
+// usuario la cambia con la app abierta, así que se consulta en cada animación
+const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
 // contador para poder cancelar una animación vieja si arranca una nueva antes de que termine
 let scrambleRunId = 0;
+
+// timeout que restaura el texto plano al terminar la ola; se cancela si se genera
+// una contraseña nueva para que la ola vieja no la sobrescriba
+let waveTimeoutId = null;
 
 // anima el texto de un elemento revelando cada caracter en cascada, tipo "decrypt"
 export function scrambleReveal(element, finalText, duration = 500) {
   const runId = ++scrambleRunId;
+  clearTimeout(waveTimeoutId);
+
+  // con movimiento reducido se muestra el texto final directamente
+  if (reducedMotionQuery.matches) {
+    element.textContent = finalText;
+    return;
+  }
+
   const length = finalText.length;
   const startTime = performance.now();
   const settleInterval = duration / length;
@@ -46,6 +62,15 @@ export function scrambleReveal(element, finalText, duration = 500) {
 
 // anima cada caracter con un rebote (sube y baja) en cascada, tipo "ola"
 export function waveAnimate(element, text, duration = 500) {
+  // cancela un scramble en curso para que no pise la ola (o el texto final)
+  ++scrambleRunId;
+
+  // con movimiento reducido no hay ola, solo se asegura el texto final
+  if (reducedMotionQuery.matches) {
+    element.textContent = text;
+    return;
+  }
+
   const chars = text.split("");
   const length = chars.length;
 
@@ -63,7 +88,8 @@ export function waveAnimate(element, text, duration = 500) {
     .join("");
 
   // al terminar, volvemos a texto plano para no dejar el DOM con spans innecesarios
-  setTimeout(() => {
+  clearTimeout(waveTimeoutId);
+  waveTimeoutId = setTimeout(() => {
     element.textContent = text;
   }, duration + charDuration - delayStep + 50);
 }

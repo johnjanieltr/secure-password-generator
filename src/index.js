@@ -62,12 +62,19 @@ document.addEventListener("change", (e) => {
   }
 });
 
+// contraseña real generada; se copia desde aquí y no desde textContent, que puede
+// tener texto intermedio de una animación o un mensaje de error
+let currentPassword = null;
+
 // contador para poder cancelar un tooltip viejo si el usuario hace click varias veces seguidas
 let tooltipTimeoutId = null;
 
 // copia la contraseña actual al portapapeles y muestra tooltip + animación de confirmación
 $copyBtn.addEventListener("click", async () => {
-  const password = $resultingPassword.textContent;
+  // si la configuración es inválida no hay contraseña que copiar
+  if (currentPassword === null) return;
+
+  const password = currentPassword;
 
   try {
     await navigator.clipboard.writeText(password);
@@ -101,8 +108,10 @@ function renderPassword() {
 
   try {
     const password = generatePassword(length, uppercase, lowercase, numbers, symbols);
+    currentPassword = password;
     scrambleReveal($resultingPassword, password);
   } catch (error) {
+    currentPassword = null;
     $resultingPassword.textContent = error.message;
   }
 }

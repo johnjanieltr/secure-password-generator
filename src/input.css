@@ -34,6 +34,13 @@
   animation-fill-mode: both;
 }
 
+/* respaldo por si la ola llega a renderizarse con movimiento reducido activo */
+@media (prefers-reduced-motion: reduce) {
+  .wave-char {
+    animation: none;
+  }
+}
+
 .shadow-app {
   box-shadow: 0 25px 50px -12px rgb(0 0 0 / var(--shadow-opacity, 0.4));
 }
