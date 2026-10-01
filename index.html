@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
   <title>Secure Password Generator - By johnjanieltr</title>
   <meta name="description" content="Generate strong, random passwords instantly. Runs 100% in your browser using the Web Crypto API — nothing is ever sent to a server.">
   <meta name="author" content="johnjanieltr">
@@ -19,18 +20,7 @@
   <meta name="twitter:title" content="Secure Password Generator">
   <meta name="twitter:description" content="Generate strong, random passwords instantly. Runs 100% in your browser using the Web Crypto API — nothing is ever sent to a server.">
 
-  <script>
-    // Se ejecuta antes del primer pintado para evitar el parpadeo de tema (FOUC).
-    (function () {
-      // Oscuro por defecto, sin importar el sistema; claro solo si el usuario lo eligió.
-      // si el navegador bloquea localStorage, leerlo lanza un error: se ignora y queda el tema oscuro
-      try {
-        if (localStorage.getItem("theme") === "light") {
-          document.documentElement.setAttribute("data-theme", "light");
-        }
-      } catch {}
-    })();
-  </script>
+  <script src="./src/theme-init.js"></script>
   <link rel="stylesheet" href="./src/styles.css">
 </head>
 <body class="min-h-screen bg-app-bg text-app-text font-sans flex flex-col items-center justify-center px-4 py-12 gap-8">
@@ -67,8 +57,8 @@
     <button
       type="button"
       id="theme-toggle"
-      aria-label="Toggle theme"
-      data-i18n-aria-label="theme.toggle"
+      aria-label="Switch to light theme"
+      data-i18n-aria-label="theme.toLight"
       class="p-2 rounded-lg text-app-muted hover:text-app-accent hover:bg-app-panel transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-app-accent focus-visible:text-app-accent"
     >
       <svg id="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 -960 960 960" class="w-5 h-5 hidden" fill="currentColor"><path d="M480-360q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm0 80q-83 0-141.5-58.5T280-480q0-83 58.5-141.5T480-680q83 0 141.5 58.5T680-480q0 83-58.5 141.5T480-280ZM200-440H40v-80h160v80Zm720 0H760v-80h160v80ZM440-760v-160h80v160h-80Zm0 720v-160h80v160h-80ZM256-650l-101-101 57-57 101 100-57 58Zm492 496-101-101 57-57 100 101-56 57ZM650-704l101-101 57 57-101 101-57-57ZM154-201l101-101 57 57-100 101-58-57Z"/></svg>
@@ -84,8 +74,8 @@
   <section class="w-full max-w-md bg-app-panel border border-app-border rounded-2xl p-6 shadow-app">
 
     <div class="flex items-center justify-between gap-3 bg-app-bg border border-app-border rounded-xl px-4 py-4 mb-6">
-      <p id="resulting-password" class="font-mono text-lg text-app-accent tracking-wide break-all">password example</p>
-      <div id="icons" class="flex items-center gap-2 shrink-0">
+      <p id="resulting-password" class="min-h-7 font-mono text-lg text-app-accent tracking-wide break-all"><noscript>JavaScript is required to generate passwords</noscript></p>
+      <div class="flex items-center gap-2 shrink-0">
         <div class="relative">
           <button
             type="button"

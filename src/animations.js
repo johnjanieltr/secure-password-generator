@@ -81,17 +81,21 @@ export function waveAnimate(element, text, duration = 500) {
   // separación entre el inicio de cada caracter, para que el último termine en `duration`
   const delayStep = length > 1 ? (duration - charDuration) / (length - 1) : 0;
 
-  element.innerHTML = chars
-    .map((char, i) => {
-      const delay = i * delayStep;
-      const safeChar = char === " " ? "&nbsp;" : char;
-      return `<span class="wave-char" style="animation-delay:${delay}ms; animation-duration:${charDuration}ms;">${safeChar}</span>`;
-    })
-    .join("");
+  // spans creados con el DOM y no con innerHTML: el texto no se interpreta como HTML
+  // y la CSP permite estilos asignados por .style, pero no atributos style en el marcado
+  const spans = chars.map((char, i) => {
+    const span = document.createElement("span");
+    span.className = "wave-char";
+    span.textContent = char === " " ? " " : char;
+    span.style.animationDelay = `${i * delayStep}ms`;
+    span.style.animationDuration = `${charDuration}ms`;
+    return span;
+  });
+  element.replaceChildren(...spans);
 
-  // al terminar, vuelve a texto plano para no dejar spans en el DOM
+  // al terminar (el último caracter acaba en `duration`), vuelve a texto plano para no dejar spans en el DOM
   clearTimeout(waveTimeoutId);
   waveTimeoutId = setTimeout(() => {
     element.textContent = text;
-  }, duration + charDuration - delayStep + 50);
+  }, duration + 50);
 }

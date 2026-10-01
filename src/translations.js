@@ -9,7 +9,8 @@ export const translations = {
       "Generate strong, random passwords instantly. Runs 100% in your browser using the Web Crypto API — nothing is ever sent to a server.",
     "app.title": "Secure Password Generator",
     "app.subtitle": "Your digital security starts with a strong password",
-    "theme.toggle": "Toggle theme",
+    "theme.toLight": "Switch to light theme",
+    "theme.toDark": "Switch to dark theme",
     "language.label": "Language",
     "actions.copy": "Copy password",
     "actions.copied": "Copied to clipboard",
@@ -22,7 +23,6 @@ export const translations = {
     "options.symbols": "Symbols",
     "errors.noCharacterSets": "Select at least one character type",
     "errors.minLength": "The minimum recommended length is {min} characters",
-    "errors.lengthBelowSets": "Length must be at least {min}",
   },
 
   es: {
@@ -31,7 +31,8 @@ export const translations = {
       "Genera contraseñas seguras y aleatorias al instante. Funciona 100% en tu navegador con la Web Crypto API: nunca se envía nada a un servidor.",
     "app.title": "Generador de contraseñas seguras",
     "app.subtitle": "Tu seguridad digital empieza con una buena contraseña",
-    "theme.toggle": "Cambiar tema",
+    "theme.toLight": "Cambiar a tema claro",
+    "theme.toDark": "Cambiar a tema oscuro",
     "language.label": "Idioma",
     "actions.copy": "Copiar contraseña",
     "actions.copied": "Copiado al portapapeles",
@@ -44,7 +45,6 @@ export const translations = {
     "options.symbols": "Símbolos",
     "errors.noCharacterSets": "Debes activar al menos un tipo de carácter",
     "errors.minLength": "La longitud mínima recomendada es {min} caracteres",
-    "errors.lengthBelowSets": "La longitud debe ser al menos {min}",
   },
 
   pt: {
@@ -53,7 +53,8 @@ export const translations = {
       "Gere senhas fortes e aleatórias na hora. Funciona 100% no seu navegador com a Web Crypto API — nada é enviado a um servidor.",
     "app.title": "Gerador de senhas seguras",
     "app.subtitle": "Sua segurança digital começa com uma senha forte",
-    "theme.toggle": "Alternar tema",
+    "theme.toLight": "Mudar para o tema claro",
+    "theme.toDark": "Mudar para o tema escuro",
     "language.label": "Idioma",
     "actions.copy": "Copiar senha",
     "actions.copied": "Copiado para a área de transferência",
@@ -66,7 +67,6 @@ export const translations = {
     "options.symbols": "Símbolos",
     "errors.noCharacterSets": "Ative pelo menos um tipo de caractere",
     "errors.minLength": "O comprimento mínimo recomendado é de {min} caracteres",
-    "errors.lengthBelowSets": "O comprimento deve ser de pelo menos {min}",
   },
 
   fr: {
@@ -75,7 +75,8 @@ export const translations = {
       "Générez instantanément des mots de passe forts et aléatoires. Fonctionne à 100 % dans votre navigateur grâce à l'API Web Crypto : rien n'est jamais envoyé à un serveur.",
     "app.title": "Générateur de mots de passe sécurisés",
     "app.subtitle": "Votre sécurité numérique commence par un mot de passe robuste",
-    "theme.toggle": "Changer de thème",
+    "theme.toLight": "Passer au thème clair",
+    "theme.toDark": "Passer au thème sombre",
     "language.label": "Langue",
     "actions.copy": "Copier le mot de passe",
     "actions.copied": "Copié dans le presse-papiers",
@@ -88,6 +89,5 @@ export const translations = {
     "options.symbols": "Symboles",
     "errors.noCharacterSets": "Activez au moins un type de caractère",
     "errors.minLength": "La longueur minimale recommandée est de {min} caractères",
-    "errors.lengthBelowSets": "La longueur doit être d'au moins {min}",
   },
 };

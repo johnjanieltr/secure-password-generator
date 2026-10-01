@@ -26,13 +26,24 @@ function readInputs() {
   };
 }
 
+// los valores guardados pueden faltar o venir mal formados: solo se aplican los válidos,
+// y el resto conserva el valor por defecto del HTML
 function applyInputs(preferences) {
-  $lengthInput.value = preferences.length;
-  $lengthValue.textContent = preferences.length;
-  $uppercaseInput.checked = preferences.uppercase;
-  $lowercaseInput.checked = preferences.lowercase;
-  $numbersInput.checked = preferences.numbers;
-  $symbolsInput.checked = preferences.symbols;
+  if (Number.isFinite(Number(preferences.length))) {
+    // el slider limita el valor a su rango, así que se muestra el valor ya limitado
+    $lengthInput.value = preferences.length;
+  }
+  $lengthValue.textContent = $lengthInput.value;
+
+  const checkboxes = {
+    uppercase: $uppercaseInput,
+    lowercase: $lowercaseInput,
+    numbers: $numbersInput,
+    symbols: $symbolsInput,
+  };
+  for (const [key, $input] of Object.entries(checkboxes)) {
+    if (typeof preferences[key] === "boolean") $input.checked = preferences[key];
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -84,7 +95,8 @@ $copyBtn.addEventListener("click", async () => {
     // por http con la IP de la red local es undefined y esto lanza TypeError
     await navigator.clipboard.writeText(password);
 
-    waveAnimate($resultingPassword, password);
+    // si se generó otra contraseña mientras se copiaba, la ola no debe escribir la vieja encima
+    if (password === currentPassword) waveAnimate($resultingPassword, password);
     showCopyFeedback(t("actions.copied"));
   } catch (error) {
     console.log("No se pudo copiar la contraseña:", error);

@@ -14,30 +14,12 @@ export function generatePassword(
   uppercase = true,
   lowercase = true,
   numbers = true,
-  symbols = true,
-  excludeAmbiguous = false
+  symbols = true
 ) {
-  let upperCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let lowerCharacters = "abcdefghijklmnopqrstuvwxyz";
-  let numericCharacters = "0123456789";
+  const upperCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowerCharacters = "abcdefghijklmnopqrstuvwxyz";
+  const numericCharacters = "0123456789";
   const symbolCharacters = "!@#$%&*.?=-";
-
-  // quita los caracteres que se confunden visualmente
-  if (excludeAmbiguous) {
-    const ambiguous = "O0Il1";
-    upperCharacters = upperCharacters
-      .split("")
-      .filter((c) => !ambiguous.includes(c))
-      .join("");
-    lowerCharacters = lowerCharacters
-      .split("")
-      .filter((c) => !ambiguous.includes(c))
-      .join("");
-    numericCharacters = numericCharacters
-      .split("")
-      .filter((c) => !ambiguous.includes(c))
-      .join("");
-  }
 
   const activeSets = [];
   if (uppercase) activeSets.push(upperCharacters);
@@ -51,10 +33,6 @@ export function generatePassword(
 
   if (length < 8) {
     throw new PasswordConfigError("minLength", { min: 8 });
-  }
-
-  if (length < activeSets.length) {
-    throw new PasswordConfigError("lengthBelowSets", { min: activeSets.length });
   }
 
   const allCharacters = activeSets.join("");

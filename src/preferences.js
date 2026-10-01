@@ -15,7 +15,8 @@ export function loadPreferences() {
   if (!stored) return null;
 
   try {
-    return JSON.parse(stored);
+    const preferences = JSON.parse(stored);
+    return typeof preferences === "object" && preferences !== null ? preferences : null;
   } catch (error) {
     console.log("No se pudieron cargar las preferencias guardadas:", error);
     return null;
