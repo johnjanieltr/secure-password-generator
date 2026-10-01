@@ -17,13 +17,12 @@ export function generatePassword(
   symbols = true,
   excludeAmbiguous = false
 ) {
-  // characters
   let upperCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let lowerCharacters = "abcdefghijklmnopqrstuvwxyz";
   let numericCharacters = "0123456789";
   const symbolCharacters = "!@#$%&*.?=-";
 
-  // Si excludeAmbiguous está activo, quitamos los caracteres que se confunden visualmente
+  // quita los caracteres que se confunden visualmente
   if (excludeAmbiguous) {
     const ambiguous = "O0Il1";
     upperCharacters = upperCharacters
@@ -40,14 +39,12 @@ export function generatePassword(
       .join("");
   }
 
-  // Armamos dinámicamente la lista de conjuntos activos según los parámetros
   const activeSets = [];
   if (uppercase) activeSets.push(upperCharacters);
   if (lowercase) activeSets.push(lowerCharacters);
   if (numbers) activeSets.push(numericCharacters);
   if (symbols) activeSets.push(symbolCharacters);
 
-  // Validaciones
   if (activeSets.length === 0) {
     throw new PasswordConfigError("noCharacterSets");
   }
@@ -62,31 +59,33 @@ export function generatePassword(
 
   const allCharacters = activeSets.join("");
 
-  // Usamos crypto.getRandomValues para generar valores aleatorios criptográficamente seguros
-  const randomValues = new Uint32Array(length);
-  crypto.getRandomValues(randomValues);
+  // al menos un carácter de cada tipo activo
+  const characters = activeSets.map((set) => set[randomIndex(set.length)]);
 
-  let password = "";
-
-  // Aseguramos al menos un carácter de cada tipo ACTIVO
-  activeSets.forEach((set, i) => {
-    password += set[randomValues[i] % set.length];
-  });
-
-  // Completamos el resto de la contraseña con el pool combinado de tipos activos
-  for (let i = activeSets.length; i < length; i++) {
-    password += allCharacters[randomValues[i] % allCharacters.length];
+  // el resto sale del pool combinado de los tipos activos
+  while (characters.length < length) {
+    characters.push(allCharacters[randomIndex(allCharacters.length)]);
   }
 
-  // Mezclamos los caracteres para que no siempre empiece igual
-  password = password
-    .split("")
-    .sort(() => {
-      const buffer = new Uint32Array(1);
-      crypto.getRandomValues(buffer);
-      return buffer[0] - 0x7fffffff;
-    })
-    .join("");
+  // Fisher-Yates, para que los caracteres garantizados no queden al principio.
+  // No usar sort() con un comparador aleatorio: no da una mezcla uniforme
+  for (let i = characters.length - 1; i > 0; i--) {
+    const j = randomIndex(i + 1);
+    [characters[i], characters[j]] = [characters[j], characters[i]];
+  }
 
-  return password;
+  return characters.join("");
+}
+
+// entero uniforme en [0, max) con crypto.getRandomValues; el muestreo por rechazo
+// descarta el último tramo incompleto de 2^32 para evitar el sesgo de `valor % max`
+function randomIndex(max) {
+  const limit = Math.floor(0x100000000 / max) * max;
+  const buffer = new Uint32Array(1);
+
+  do {
+    crypto.getRandomValues(buffer);
+  } while (buffer[0] >= limit);
+
+  return buffer[0] % max;
 }

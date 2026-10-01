@@ -20,16 +20,15 @@
   <meta name="twitter:description" content="Generate strong, random passwords instantly. Runs 100% in your browser using the Web Crypto API — nothing is ever sent to a server.">
 
   <script>
-    // Se ejecuta ANTES de que el navegador pinte la página, para evitar el
-    // parpadeo de "flash de tema incorrecto" (FOUC).
+    // Se ejecuta antes del primer pintado para evitar el parpadeo de tema (FOUC).
     (function () {
-      // Por defecto siempre es dark, sin importar el sistema operativo del
-      // usuario. Solo cambiamos a light si el usuario ya lo eligió antes.
-      const storedTheme = localStorage.getItem("theme");
-
-      if (storedTheme === "light") {
-        document.documentElement.setAttribute("data-theme", "light");
-      }
+      // Oscuro por defecto, sin importar el sistema; claro solo si el usuario lo eligió.
+      // si el navegador bloquea localStorage, leerlo lanza un error: se ignora y queda el tema oscuro
+      try {
+        if (localStorage.getItem("theme") === "light") {
+          document.documentElement.setAttribute("data-theme", "light");
+        }
+      } catch {}
     })();
   </script>
   <link rel="stylesheet" href="./src/styles.css">
@@ -99,10 +98,9 @@
           </button>
           <span
             id="copy-tooltip"
-            role="status"
-            data-i18n="actions.copied"
+            aria-hidden="true"
             class="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs bg-app-border text-app-text px-2 py-1 rounded-md opacity-0 pointer-events-none transition-opacity duration-200"
-          >Copied to clipboard</span>
+          ></span>
         </div>
         <button
           type="button"
@@ -152,6 +150,10 @@
     </div>
 
   </section>
+
+  <!-- región única de anuncios para lectores de pantalla (copiar y errores);
+       la llena announce() en index.js -->
+  <p id="live-region" role="status" class="sr-only"></p>
 
   <script type="module" src="./src/index.js"></script>
 </body>

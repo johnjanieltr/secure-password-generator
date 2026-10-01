@@ -1,24 +1,27 @@
-// pool de caracteres usado únicamente para el efecto visual de scramble
+// caracteres solo para el efecto visual del scramble, nunca para la contraseña real
 const SCRAMBLE_CHARACTERS =
   "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*.?=-";
 
-// preferencia del sistema de reducir movimiento; .matches se actualiza solo si el
-// usuario la cambia con la app abierta, así que se consulta en cada animación
+// se consulta .matches en cada animación para respetar cambios hechos con la app abierta
 const reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-// contador para poder cancelar una animación vieja si arranca una nueva antes de que termine
+// cada animación nueva lo incrementa, y así la anterior sabe que debe detenerse
 let scrambleRunId = 0;
 
-// timeout que restaura el texto plano al terminar la ola; se cancela si se genera
-// una contraseña nueva para que la ola vieja no la sobrescriba
+// timeout que restaura el texto plano tras la ola; se cancela para que no pise una contraseña nueva
 let waveTimeoutId = null;
+
+// detiene el scramble y la ola en curso; se usa antes de mostrar un error para que la animación no lo tape
+export function cancelAnimations() {
+  ++scrambleRunId;
+  clearTimeout(waveTimeoutId);
+}
 
 // anima el texto de un elemento revelando cada caracter en cascada, tipo "decrypt"
 export function scrambleReveal(element, finalText, duration = 500) {
   const runId = ++scrambleRunId;
   clearTimeout(waveTimeoutId);
 
-  // con movimiento reducido se muestra el texto final directamente
   if (reducedMotionQuery.matches) {
     element.textContent = finalText;
     return;
@@ -29,7 +32,7 @@ export function scrambleReveal(element, finalText, duration = 500) {
   const settleInterval = duration / length;
 
   function frame(now) {
-    // si ya arrancó una animación más nueva, esta se detiene sola
+    // una animación más nueva cancela esta
     if (runId !== scrambleRunId) return;
 
     const elapsed = now - startTime;
@@ -62,10 +65,9 @@ export function scrambleReveal(element, finalText, duration = 500) {
 
 // anima cada caracter con un rebote (sube y baja) en cascada, tipo "ola"
 export function waveAnimate(element, text, duration = 500) {
-  // cancela un scramble en curso para que no pise la ola (o el texto final)
+  // cancela un scramble en curso para que no pise la ola
   ++scrambleRunId;
 
-  // con movimiento reducido no hay ola, solo se asegura el texto final
   if (reducedMotionQuery.matches) {
     element.textContent = text;
     return;
@@ -74,9 +76,9 @@ export function waveAnimate(element, text, duration = 500) {
   const chars = text.split("");
   const length = chars.length;
 
-  // duración del rebote de cada caracter individual
+  // duración del rebote de cada caracter
   const charDuration = Math.min(350, duration);
-  // qué tan separado arranca cada caracter respecto al anterior, para que el último termine justo en "duration"
+  // separación entre el inicio de cada caracter, para que el último termine en `duration`
   const delayStep = length > 1 ? (duration - charDuration) / (length - 1) : 0;
 
   element.innerHTML = chars
@@ -87,7 +89,7 @@ export function waveAnimate(element, text, duration = 500) {
     })
     .join("");
 
-  // al terminar, volvemos a texto plano para no dejar el DOM con spans innecesarios
+  // al terminar, vuelve a texto plano para no dejar spans en el DOM
   clearTimeout(waveTimeoutId);
   waveTimeoutId = setTimeout(() => {
     element.textContent = text;

@@ -1,7 +1,8 @@
 // --- Tema (oscuro/claro) ---
-// Nota: el atributo data-theme YA fue aplicado por el script inline en el <head>
-// (para evitar parpadeo). Aquí solo sincronizamos los íconos y manejamos
-// el toggle manual del usuario.
+// El script inline del <head> ya aplicó data-theme (para evitar parpadeo);
+// aquí solo se sincronizan los íconos y se maneja el toggle.
+
+import { writeStorage } from "./storage.js";
 
 const $themeToggle = document.getElementById("theme-toggle");
 const $sunIcon = document.getElementById("sun-icon");
@@ -20,20 +21,18 @@ function setTheme(theme, persist) {
   }
 
   if (persist) {
-    localStorage.setItem("theme", theme);
+    writeStorage("theme", theme);
   }
 }
 
 export function initTheme() {
-  // sincroniza los íconos con el tema que el script del <head> ya aplicó
   const currentTheme =
     document.documentElement.getAttribute("data-theme") === "light"
       ? "light"
       : "dark";
   setTheme(currentTheme, false);
 
-  // clic manual del usuario: alterna el tema y esta vez SÍ lo guarda como
-  // preferencia explícita, para que prevalezca en visitas futuras
+  // el clic sí guarda el tema, para que prevalezca en visitas futuras
   $themeToggle.addEventListener("click", () => {
     const isLight = document.documentElement.getAttribute("data-theme") === "light";
     setTheme(isLight ? "dark" : "light", true);

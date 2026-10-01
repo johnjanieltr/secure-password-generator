@@ -5,6 +5,7 @@
 
 import { translations } from "./translations.js";
 import { initLanguageMenu, syncLanguageMenu } from "./language-menu.js";
+import { readStorage, writeStorage } from "./storage.js";
 
 const SUPPORTED_LANGUAGES = ["en", "es", "pt", "fr"];
 const DEFAULT_LANGUAGE = "en";
@@ -20,7 +21,7 @@ let currentLanguage = DEFAULT_LANGUAGE;
 // idioma guardado por el usuario; si no hay, el primero del navegador que
 // coincida por prefijo (es-AR → es); si ninguno coincide, inglés
 function detectLanguage() {
-  const stored = localStorage.getItem(LANGUAGE_KEY);
+  const stored = readStorage(LANGUAGE_KEY);
   if (SUPPORTED_LANGUAGES.includes(stored)) return stored;
 
   const browserLanguages = navigator.languages?.length
@@ -46,7 +47,6 @@ export function t(key, params = {}) {
   );
 }
 
-// reemplaza todos los textos marcados en el DOM con el idioma actual
 function applyTranslations() {
   document.querySelectorAll("[data-i18n]").forEach(($el) => {
     $el.textContent = t($el.dataset.i18n);
@@ -68,7 +68,7 @@ function setLanguage(language, persist) {
   syncLanguageMenu(language, t("language.label"));
 
   if (persist) {
-    localStorage.setItem(LANGUAGE_KEY, language);
+    writeStorage(LANGUAGE_KEY, language);
   }
 }
 
