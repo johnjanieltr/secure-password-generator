@@ -1,6 +1,7 @@
-import { generatePassword } from "./password.js";
+import { generatePassword, PasswordConfigError } from "./password.js";
 import { scrambleReveal, waveAnimate } from "./animations.js";
 import { initTheme } from "./theme.js";
+import { initLanguage, t } from "./i18n.js";
 import { loadPreferences, savePreferences } from "./preferences.js";
 
 const $resultingPassword = document.getElementById("resulting-password");
@@ -36,6 +37,7 @@ function applyInputs(preferences) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  initLanguage(onLanguageChange);
   initTheme();
 
   // si no hay preferencias guardadas, se quedan los valores por defecto del HTML
@@ -65,6 +67,10 @@ document.addEventListener("change", (e) => {
 // contraseña real generada; se copia desde aquí y no desde textContent, que puede
 // tener texto intermedio de una animación o un mensaje de error
 let currentPassword = null;
+
+// error de configuración que se está mostrando ({ code, params }), o null; se guarda
+// para poder volver a traducirlo al cambiar de idioma sin regenerar nada
+let currentError = null;
 
 // contador para poder cancelar un tooltip viejo si el usuario hace click varias veces seguidas
 let tooltipTimeoutId = null;
@@ -109,9 +115,24 @@ function renderPassword() {
   try {
     const password = generatePassword(length, uppercase, lowercase, numbers, symbols);
     currentPassword = password;
+    currentError = null;
     scrambleReveal($resultingPassword, password);
   } catch (error) {
+    if (!(error instanceof PasswordConfigError)) throw error;
+
     currentPassword = null;
-    $resultingPassword.textContent = error.message;
+    currentError = { code: error.code, params: error.params };
+    renderError();
   }
+}
+
+// muestra el error de configuración actual en el idioma actual
+function renderError() {
+  $resultingPassword.textContent = t(`errors.${currentError.code}`, currentError.params);
+}
+
+// los textos del HTML ya los tradujo i18n.js; aquí solo falta el error, si lo hay.
+// Una contraseña válida se deja tal cual: cambiar de idioma no la regenera
+function onLanguageChange() {
+  if (currentError) renderError();
 }

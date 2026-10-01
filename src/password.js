@@ -1,3 +1,14 @@
+// Error de configuración inválida. No lleva texto para el usuario: code y params
+// identifican qué falló, y la UI lo traduce con la clave `errors.${code}`.
+export class PasswordConfigError extends Error {
+  constructor(code, params = {}) {
+    super(code);
+    this.name = "PasswordConfigError";
+    this.code = code;
+    this.params = params;
+  }
+}
+
 export function generatePassword(
   length = 12,
   uppercase = true,
@@ -38,15 +49,15 @@ export function generatePassword(
 
   // Validaciones
   if (activeSets.length === 0) {
-    throw new Error("Debes activar al menos un tipo de carácter");
+    throw new PasswordConfigError("noCharacterSets");
   }
 
   if (length < 8) {
-    throw new Error("La longitud mínima recomendada es 8 caracteres");
+    throw new PasswordConfigError("minLength", { min: 8 });
   }
 
   if (length < activeSets.length) {
-    throw new Error(`La longitud debe ser al menos ${activeSets.length}`);
+    throw new PasswordConfigError("lengthBelowSets", { min: activeSets.length });
   }
 
   const allCharacters = activeSets.join("");
