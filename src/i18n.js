@@ -56,7 +56,6 @@ function applyTranslations() {
     $el.setAttribute("aria-label", t($el.dataset.i18nAriaLabel));
   });
 
-  document.title = t("meta.title");
   $metaDescription.setAttribute("content", t("meta.description"));
 }
 

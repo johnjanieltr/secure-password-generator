@@ -1,6 +1,7 @@
 import { generatePassword, PasswordConfigError } from "./password.js";
 import { scrambleReveal, waveAnimate, cancelAnimations } from "./animations.js";
 import { initTheme } from "./theme.js";
+import { initPrivacyInfo } from "./privacy-info.js";
 import { initLanguage, t } from "./i18n.js";
 import { loadPreferences, savePreferences } from "./preferences.js";
 
@@ -49,6 +50,7 @@ function applyInputs(preferences) {
 document.addEventListener("DOMContentLoaded", () => {
   initLanguage(onLanguageChange);
   initTheme();
+  initPrivacyInfo();
 
   // si no hay preferencias guardadas, se quedan los valores por defecto del HTML
   const preferences = loadPreferences();

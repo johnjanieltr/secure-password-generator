@@ -4,7 +4,6 @@
 
 export const translations = {
   en: {
-    "meta.title": "Secure Password Generator - By johnjanieltr",
     "meta.description":
       "Generate strong, random passwords instantly. Runs 100% in your browser using the Web Crypto API — nothing is ever sent to a server.",
     "app.title": "Secure Password Generator",
@@ -21,12 +20,15 @@ export const translations = {
     "options.lowercase": "Lowercase",
     "options.numbers": "Numbers",
     "options.symbols": "Symbols",
+    "footer.summary": "No cookies · No tracking · 100% local",
+    "footer.detailsLabel": "Privacy details",
+    "footer.details":
+      "Passwords are generated on your device and never sent anywhere. Your language, theme and options are saved only in your browser.",
     "errors.noCharacterSets": "Select at least one character type",
     "errors.minLength": "The minimum recommended length is {min} characters",
   },
 
   es: {
-    "meta.title": "Generador de contraseñas seguras - By johnjanieltr",
     "meta.description":
       "Genera contraseñas seguras y aleatorias al instante. Funciona 100% en tu navegador con la Web Crypto API: nunca se envía nada a un servidor.",
     "app.title": "Generador de contraseñas seguras",
@@ -43,12 +45,15 @@ export const translations = {
     "options.lowercase": "Minúsculas",
     "options.numbers": "Números",
     "options.symbols": "Símbolos",
+    "footer.summary": "Sin cookies · Sin rastreo · 100 % local",
+    "footer.detailsLabel": "Detalles de privacidad",
+    "footer.details":
+      "Las contraseñas se generan en tu dispositivo y nunca se envían a ningún lado. Tu idioma, tema y opciones se guardan solo en tu navegador.",
     "errors.noCharacterSets": "Debes activar al menos un tipo de carácter",
     "errors.minLength": "La longitud mínima recomendada es {min} caracteres",
   },
 
   pt: {
-    "meta.title": "Gerador de senhas seguras - By johnjanieltr",
     "meta.description":
       "Gere senhas fortes e aleatórias na hora. Funciona 100% no seu navegador com a Web Crypto API — nada é enviado a um servidor.",
     "app.title": "Gerador de senhas seguras",
@@ -65,12 +70,15 @@ export const translations = {
     "options.lowercase": "Minúsculas",
     "options.numbers": "Números",
     "options.symbols": "Símbolos",
+    "footer.summary": "Sem cookies · Sem rastreamento · 100% local",
+    "footer.detailsLabel": "Detalhes de privacidade",
+    "footer.details":
+      "As senhas são geradas no seu dispositivo e nunca são enviadas a lugar nenhum. Seu idioma, tema e opções ficam salvos apenas no seu navegador.",
     "errors.noCharacterSets": "Ative pelo menos um tipo de caractere",
     "errors.minLength": "O comprimento mínimo recomendado é de {min} caracteres",
   },
 
   fr: {
-    "meta.title": "Générateur de mots de passe sécurisés - By johnjanieltr",
     "meta.description":
       "Générez instantanément des mots de passe forts et aléatoires. Fonctionne à 100 % dans votre navigateur grâce à l'API Web Crypto : rien n'est jamais envoyé à un serveur.",
     "app.title": "Générateur de mots de passe sécurisés",
@@ -87,6 +95,10 @@ export const translations = {
     "options.lowercase": "Minuscules",
     "options.numbers": "Chiffres",
     "options.symbols": "Symboles",
+    "footer.summary": "Sans cookies · Sans suivi · 100 % local",
+    "footer.detailsLabel": "Détails sur la confidentialité",
+    "footer.details":
+      "Les mots de passe sont générés sur votre appareil et ne sont jamais envoyés nulle part. Votre langue, votre thème et vos options sont enregistrés uniquement dans votre navigateur.",
     "errors.noCharacterSets": "Activez au moins un type de caractère",
     "errors.minLength": "La longueur minimale recommandée est de {min} caractères",
   },
